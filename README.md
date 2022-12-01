@@ -38,15 +38,17 @@ Replace your MaterialApp with PiPMaterialApp. Optionally provide the pipHeight a
 These correspond to the height and width of your pip widget.
 
 
-<!-- ## Usage
+## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+<!-- TODO: Include short and useful examples for package users. Add longer examples
+to `/example` folder. -->
+
+After replacing your MaterialApp with PiPMaterialApp, use 
 
 ```dart
-const like = 'sample';
+PictureInPicture.startPiP(MyPiPWidget());
 ```
-
+<!--
 ## Additional information
 
 TODO: Tell users more about the package: where to find more information, how to
