@@ -38,7 +38,7 @@ class MovableOverlayState extends State<MovableOverlay>
   var _isFloating = false;
   Widget? _bottomWidgetGhost;
   Map<PIPViewCorner, Offset> _offsets = {};
-  final defaultAnimationDuration = Duration(milliseconds: 200);
+  final defaultAnimationDuration = const Duration(milliseconds: 200);
 
   @override
   void initState() {

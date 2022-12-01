@@ -21,7 +21,7 @@ class _PiPCapableWidgetState extends State<PiPCapableWidget> {
           color: Colors.black,
           alignment: Alignment.center,
           width: MediaQuery.of(context).size.width,
-          child: Text(
+          child: const Text(
             'Playing in PiP',
             style: TextStyle(color: Colors.white),
           ),

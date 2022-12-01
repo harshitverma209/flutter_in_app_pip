@@ -3,13 +3,13 @@ import 'package:flutter_in_app_pip/picture_in_picture.dart';
 
 class PiPWidget extends StatefulWidget {
   final Widget child;
-  Function onPiPClose;
+  final Function onPiPClose;
 
   static void closePiP() {
     PictureInPicture.stopPiP();
   }
 
-  PiPWidget({
+  const PiPWidget({
     Key? key,
     required this.onPiPClose,
     required this.child,

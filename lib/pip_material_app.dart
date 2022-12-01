@@ -416,13 +416,12 @@ class PiPMaterialApp extends StatefulWidget {
     this.navigatorKey,
     this.scaffoldMessengerKey,
     this.home,
-    Map<String, WidgetBuilder> this.routes = const <String, WidgetBuilder>{},
+    this.routes = const <String, WidgetBuilder>{},
     this.initialRoute,
     this.onGenerateRoute,
     this.onGenerateInitialRoutes,
     this.onUnknownRoute,
-    List<NavigatorObserver> this.navigatorObservers =
-        const <NavigatorObserver>[],
+    this.navigatorObservers = const <NavigatorObserver>[],
     this.builder,
     this.title = '',
     this.onGenerateTitle,
@@ -470,7 +469,7 @@ class PiPMaterialAppState extends State<PiPMaterialApp> {
   double pipWindowWidth = 300;
   void changeOverlay({Widget? overlay}) {
     _overlay = overlay;
-    Future.delayed(Duration(seconds: 0)).then((value) => setState(() {}));
+    Future.delayed(const Duration(seconds: 0)).then((value) => setState(() {}));
   }
 
   void updatePiPWindowSize({required double height, required double width}) {
