@@ -87,9 +87,13 @@ PictureInPicture.updatePiPWindowSize(height: height, width: width);
 ```
 
 
-<!--
-## Additional information
 
-TODO: Tell users more about the package: where to find more information, how to
+## Note
+
+Please do not use the builder property of the PiPMarterialApp.
+
+That's it. Enjoy!
+
+<!-- TODO: Tell users more about the package: where to find more information, how to
 contribute to the package, how to file issues, what response they can expect
 from the package authors, and more. -->
