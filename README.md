@@ -37,9 +37,9 @@ start using the package. -->
 
 Import the package.
 
-Replace your MaterialApp with PiPMaterialApp. Optionally provide the pipHeight and pipWidth parameters.
+Replace your MaterialApp with PiPMaterialApp. 
 
-These correspond to the height and width of your pip widget.
+Optionally provide the pipHeight and pipWidth parameters. These correspond to the height and width of your pip widget.
 
 
 ## Usage
