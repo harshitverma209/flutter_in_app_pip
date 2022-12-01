@@ -25,6 +25,7 @@ Written completely in dart.
 
 Easily Implement PiP(Picture in Picture) in app.
 Automatically Handle showing different widgets in the original view when in pip and when not in pip.
+Provides the ability to update the size of the pip widget later after starting pip.
 
 
 ## Getting started
@@ -46,8 +47,43 @@ to `/example` folder. -->
 After replacing your MaterialApp with PiPMaterialApp, use 
 
 ```dart
-PictureInPicture.startPiP(MyPiPWidget());
+ PictureInPicture.startPiP(pipWidget: MyPiPWidget());
 ```
+
+to start PiP view in your app.
+
+When you wish to stop PiP, use
+
+```dart
+PictureInPicture.stopPiP();
+```
+
+Use `PiPWidget` for additional functionalities like handling events on close of pip e.g.
+
+```dart
+PictureInPicture.startPiP(
+    pipWidget:PiPWidget(child: ChildWidget(),onPiPClose: (){
+      //Handle closing events e.g. dispose controllers.
+      
+    },)
+);
+```
+
+Additonally, you can also use `PiPCapableWidget` to handle the view changes in case of PiP start and stop e.g.
+
+```dart
+PiPCapableWidget(
+    whileNotInPip: ChildToShowWhileNotInPiP(),
+    whileInPip: ChildToShowWhileInPiP(),
+);
+```
+
+Update the size of the pip view like below:
+```dart
+PictureInPicture.updatePiPWindowSize(height: height, width: width);
+```
+
+
 <!--
 ## Additional information
 
