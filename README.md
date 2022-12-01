@@ -24,7 +24,9 @@ Written completely in dart.
 <!-- TODO: List what your package can do. Maybe include images, gifs, or videos. -->
 
 Easily Implement PiP(Picture in Picture) in app.
+
 Automatically Handle showing different widgets in the original view when in pip and when not in pip.
+
 Provides the ability to update the size of the pip widget later after starting pip.
 
 
@@ -36,6 +38,7 @@ start using the package. -->
 Import the package.
 
 Replace your MaterialApp with PiPMaterialApp. Optionally provide the pipHeight and pipWidth parameters.
+
 These correspond to the height and width of your pip widget.
 
 
