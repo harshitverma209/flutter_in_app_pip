@@ -53,7 +53,7 @@ PictureInPicture.startPiP(
 );
 ```
 
-Additonally, you can also use `PiPCapableWidget` to handle the view changes in case of PiP start and stop e.g.
+Additionally, you can also use `PiPCapableWidget` to handle the view changes in case of PiP start and stop e.g.
 
 ```dart
 PiPCapableWidget(
