@@ -7,6 +7,7 @@ class MovableOverlay extends StatefulWidget {
   final bool avoidKeyboard;
   final Widget? topWidget;
   final Widget? bottomWidget;
+
   // this is exposed because trying to watch onTap event
   // by wrapping the top widget with a gesture detector
   // causes the tap to be lost sometimes because it
@@ -170,13 +171,6 @@ class MovableOverlayState extends State<MovableOverlay>
 
         final calculatedOffset = _offsets[_corner];
 
-        // BoxFit.cover
-        final widthRatio = floatingWidth / width;
-        final heightRatio = floatingHeight / height;
-        final scaledDownScale = widthRatio > heightRatio
-            ? floatingWidgetSize.width / fullWidgetSize.width
-            : floatingWidgetSize.height / fullWidgetSize.height;
-
         return Stack(
           children: <Widget>[
             if (bottomWidget != null) bottomWidget,
@@ -205,10 +199,6 @@ class MovableOverlayState extends State<MovableOverlay>
                         ).transform(_dragAnimationController.isAnimating
                           ? dragAnimationValue
                           : toggleFloatingAnimationValue);
-                  final borderRadius = Tween<double>(
-                    begin: 0,
-                    end: 10,
-                  ).transform(toggleFloatingAnimationValue);
                   final width = Tween<double>(
                     begin: fullWidgetSize.width,
                     end: floatingWidgetSize.width,
@@ -217,10 +207,7 @@ class MovableOverlayState extends State<MovableOverlay>
                     begin: fullWidgetSize.height,
                     end: floatingWidgetSize.height,
                   ).transform(toggleFloatingAnimationValue);
-                  final scale = Tween<double>(
-                    begin: 1,
-                    end: scaledDownScale,
-                  ).transform(toggleFloatingAnimationValue);
+
                   return Positioned(
                     left: floatingOffset.dx,
                     top: floatingOffset.dy,
@@ -230,26 +217,10 @@ class MovableOverlayState extends State<MovableOverlay>
                       onPanCancel: _isFloating ? _onPanCancel : null,
                       onPanEnd: _isFloating ? _onPanEnd : null,
                       onTap: widget.onTapTopWidget,
-                      child: Material(
-                        // elevation: 10,
-                        borderRadius: BorderRadius.circular(borderRadius),
-                        child: Container(
-                          clipBehavior: Clip.antiAlias,
-                          decoration: BoxDecoration(
-                            color: Colors.transparent,
-                            borderRadius: BorderRadius.circular(borderRadius),
-                          ),
-                          width: width,
-                          height: height,
-                          child: Transform.scale(
-                            scale: scale,
-                            child: OverflowBox(
-                              maxHeight: fullWidgetSize.height,
-                              maxWidth: fullWidgetSize.width,
-                              child: child,
-                            ),
-                          ),
-                        ),
+                      child: SizedBox(
+                        width: width,
+                        height: height,
+                        child: child,
                       ),
                     ),
                   );

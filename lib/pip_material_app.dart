@@ -479,6 +479,13 @@ class PiPMaterialAppState extends State<PiPMaterialApp> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    pipWindowHeight = widget.pipWindowHeight ?? 150;
+    pipWindowWidth = widget.pipWindowWidth ?? 300;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       actions: widget.actions,
@@ -487,7 +494,10 @@ class PiPMaterialAppState extends State<PiPMaterialApp> {
           return MaterialPageRoute(
             builder: (context) {
               return MovableOverlay(
-                bottomWidget: child,
+                avoidKeyboard: true,
+                bottomWidget: widget.builder != null
+                    ? widget.builder!(context, child)
+                    : child,
                 topWidget: _overlay,
                 floatingHeight: pipWindowHeight,
                 floatingWidth: pipWindowWidth,

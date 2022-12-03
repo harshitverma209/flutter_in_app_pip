@@ -4,6 +4,8 @@ import 'package:flutter_in_app_pip/picture_in_picture.dart';
 class PiPWidget extends StatefulWidget {
   final Widget child;
   final Function onPiPClose;
+  final double elevation;
+  final double pipBorderRadius;
 
   static void closePiP() {
     PictureInPicture.stopPiP();
@@ -12,6 +14,8 @@ class PiPWidget extends StatefulWidget {
   const PiPWidget({
     Key? key,
     required this.onPiPClose,
+    this.pipBorderRadius = 5,
+    this.elevation = 10,
     required this.child,
   }) : super(key: key);
 
@@ -22,7 +26,11 @@ class PiPWidget extends StatefulWidget {
 class _PiPWidgetState extends State<PiPWidget> {
   @override
   Widget build(BuildContext context) {
-    return widget.child;
+    return Material(
+      borderRadius: BorderRadius.circular(widget.pipBorderRadius),
+      elevation: widget.elevation,
+      child: widget.child,
+    );
   }
 
   @override

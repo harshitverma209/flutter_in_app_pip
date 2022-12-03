@@ -41,10 +41,15 @@ Use `PiPWidget` for additional functionalities like handling events on close of 
 
 ```dart
 PictureInPicture.startPiP(
-    pipWidget:PiPWidget(child: ChildWidget(),onPiPClose: (){
+    pipWidget:PiPWidget(
+      child: ChildWidget(),
+      onPiPClose: (){
       //Handle closing events e.g. dispose controllers.
       
-    },)
+      },
+      elevation: 10,        //Optional
+      pipBorderRadius: 10,  //Optional
+      )
 );
 ```
 
@@ -53,7 +58,7 @@ Additonally, you can also use `PiPCapableWidget` to handle the view changes in c
 ```dart
 PiPCapableWidget(
     whileNotInPip: ChildToShowWhileNotInPiP(),
-    whileInPip: ChildToShowWhileInPiP(),
+    whileInPip: ChildToShowWhileInPiP(),      //Optional
 );
 ```
 
@@ -63,7 +68,4 @@ PictureInPicture.updatePiPWindowSize(height: height, width: width);
 ```
 
 ## Note
-
-Please do not use the builder property of the PiPMarterialApp.
-
 That's it. Enjoy!
