@@ -490,21 +490,14 @@ class PiPMaterialAppState extends State<PiPMaterialApp> {
     return MaterialApp(
       actions: widget.actions,
       builder: (context, child) {
-        return Navigator(onGenerateRoute: (settings) {
-          return MaterialPageRoute(
-            builder: (context) {
-              return MovableOverlay(
-                avoidKeyboard: true,
-                bottomWidget: widget.builder != null
-                    ? widget.builder!(context, child)
-                    : child,
-                topWidget: _overlay,
-                floatingHeight: pipWindowHeight,
-                floatingWidth: pipWindowWidth,
-              );
-            },
-          );
-        });
+        return MovableOverlay(
+          avoidKeyboard: true,
+          bottomWidget:
+              widget.builder != null ? widget.builder!(context, child) : child,
+          topWidget: _overlay,
+          floatingHeight: pipWindowHeight,
+          floatingWidth: pipWindowWidth,
+        );
       },
       checkerboardOffscreenLayers: widget.checkerboardOffscreenLayers,
       checkerboardRasterCacheImages: widget.checkerboardRasterCacheImages,
