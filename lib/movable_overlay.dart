@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_in_app_pip/pip_params.dart';
 
 class MovableOverlay extends StatefulWidget {
   final PIPViewCorner initialCorner;
-  final double? floatingWidth;
-  final double? floatingHeight;
+
+  final PiPParams pipParams;
   final bool avoidKeyboard;
   final Widget? topWidget;
   final Widget? bottomWidget;
@@ -17,12 +18,11 @@ class MovableOverlay extends StatefulWidget {
   const MovableOverlay({
     Key? key,
     this.initialCorner = PIPViewCorner.topRight,
-    this.floatingWidth,
-    this.floatingHeight,
     this.avoidKeyboard = true,
     this.topWidget,
     this.bottomWidget,
     this.onTapTopWidget,
+    this.pipParams = const PiPParams(),
   }) : super(key: key);
 
   @override
@@ -151,14 +151,9 @@ class MovableOverlayState extends State<MovableOverlay>
         final width = constraints.maxWidth;
         final height = constraints.maxHeight;
         double? floatingWidth =
-            widget.topWidget != null ? widget.floatingWidth : 0;
+            widget.topWidget != null ? widget.pipParams.floatingWidth : 0;
         double? floatingHeight =
-            widget.topWidget != null ? widget.floatingHeight : 0;
-        if (floatingWidth == null && floatingHeight != null) {
-          floatingWidth = width / height * floatingHeight;
-        }
-        floatingWidth ??= 100.0;
-        floatingHeight ??= height / width * floatingWidth;
+            widget.topWidget != null ? widget.pipParams.floatingHeight : 0;
 
         final floatingWidgetSize = Size(floatingWidth, floatingHeight);
         final fullWidgetSize = Size(width, height);
@@ -232,6 +227,46 @@ class MovableOverlayState extends State<MovableOverlay>
       },
     );
   }
+
+  Map<PIPViewCorner, Offset> _calculateOffsets({
+    required Size spaceSize,
+    required Size widgetSize,
+    required EdgeInsets windowPadding,
+  }) {
+    Offset getOffsetForCorner(PIPViewCorner corner) {
+      final left = widget.pipParams.leftSpace + windowPadding.left;
+      final top = widget.pipParams.topSpace + windowPadding.top;
+      final right = spaceSize.width -
+          widgetSize.width -
+          windowPadding.right -
+          widget.pipParams.rightSpace;
+      final bottom = spaceSize.height -
+          widgetSize.height -
+          windowPadding.bottom -
+          widget.pipParams.bottomSpace;
+
+      switch (corner) {
+        case PIPViewCorner.topLeft:
+          return Offset(left, top);
+        case PIPViewCorner.topRight:
+          return Offset(right, top);
+        case PIPViewCorner.bottomLeft:
+          return Offset(left, bottom);
+        case PIPViewCorner.bottomRight:
+          return Offset(right, bottom);
+        default:
+          throw UnimplementedError();
+      }
+    }
+
+    const corners = PIPViewCorner.values;
+    final Map<PIPViewCorner, Offset> offsets = {};
+    for (final corner in corners) {
+      offsets[corner] = getOffsetForCorner(corner);
+    }
+
+    return offsets;
+  }
 }
 
 enum PIPViewCorner {
@@ -273,41 +308,4 @@ PIPViewCorner _calculateNearestCorner({
   distances.sort((cd0, cd1) => cd0.distance.compareTo(cd1.distance));
 
   return distances.first.corner;
-}
-
-Map<PIPViewCorner, Offset> _calculateOffsets({
-  required Size spaceSize,
-  required Size widgetSize,
-  required EdgeInsets windowPadding,
-}) {
-  Offset getOffsetForCorner(PIPViewCorner corner) {
-    const spacing = 16;
-    final left = spacing + windowPadding.left;
-    final top = spacing + windowPadding.top;
-    final right =
-        spaceSize.width - widgetSize.width - windowPadding.right - spacing;
-    final bottom =
-        spaceSize.height - widgetSize.height - windowPadding.bottom - spacing;
-
-    switch (corner) {
-      case PIPViewCorner.topLeft:
-        return Offset(left, top);
-      case PIPViewCorner.topRight:
-        return Offset(right, top);
-      case PIPViewCorner.bottomLeft:
-        return Offset(left, bottom);
-      case PIPViewCorner.bottomRight:
-        return Offset(right, bottom);
-      default:
-        throw UnimplementedError();
-    }
-  }
-
-  const corners = PIPViewCorner.values;
-  final Map<PIPViewCorner, Offset> offsets = {};
-  for (final corner in corners) {
-    offsets[corner] = getOffsetForCorner(corner);
-  }
-
-  return offsets;
 }

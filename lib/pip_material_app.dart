@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_in_app_pip/movable_overlay.dart';
 import 'package:flutter_in_app_pip/picture_in_picture.dart';
+import 'package:flutter_in_app_pip/pip_params.dart';
 
 class PiPMaterialApp extends StatefulWidget {
   /// {@macro flutter.widgets.widgetsApp.navigatorKey}
@@ -408,8 +409,7 @@ class PiPMaterialApp extends StatefulWidget {
   /// {@macro flutter.widgets.widgetsApp.useInheritedMediaQuery}
   final bool useInheritedMediaQuery;
 
-  final double? pipWindowHeight;
-  final double? pipWindowWidth;
+  final PiPParams pipParams;
 
   PiPMaterialApp({
     Key? key,
@@ -447,8 +447,7 @@ class PiPMaterialApp extends StatefulWidget {
     this.restorationScopeId,
     this.scrollBehavior,
     this.useInheritedMediaQuery = false,
-    this.pipWindowHeight,
-    this.pipWindowWidth,
+    this.pipParams = const PiPParams(),
   })  : routeInformationProvider = null,
         routeInformationParser = null,
         routerDelegate = null,
@@ -465,24 +464,21 @@ class PiPMaterialApp extends StatefulWidget {
 class PiPMaterialAppState extends State<PiPMaterialApp> {
   Widget? _overlay;
 
-  double pipWindowHeight = 150;
-  double pipWindowWidth = 300;
+  PiPParams pipParams = const PiPParams();
   void changeOverlay({Widget? overlay}) {
     _overlay = overlay;
     Future.delayed(const Duration(seconds: 0)).then((value) => setState(() {}));
   }
 
-  void updatePiPWindowSize({required double height, required double width}) {
-    pipWindowHeight = height;
-    pipWindowWidth = width;
+  void updatePiPParams({required PiPParams pipParams}) {
+    this.pipParams = pipParams;
     setState(() {});
   }
 
   @override
   void initState() {
     super.initState();
-    pipWindowHeight = widget.pipWindowHeight ?? 150;
-    pipWindowWidth = widget.pipWindowWidth ?? 300;
+    pipParams = widget.pipParams;
   }
 
   @override
@@ -495,8 +491,7 @@ class PiPMaterialAppState extends State<PiPMaterialApp> {
           bottomWidget:
               widget.builder != null ? widget.builder!(context, child) : child,
           topWidget: _overlay,
-          floatingHeight: pipWindowHeight,
-          floatingWidth: pipWindowWidth,
+          pipParams: pipParams,
         );
       },
       checkerboardOffscreenLayers: widget.checkerboardOffscreenLayers,

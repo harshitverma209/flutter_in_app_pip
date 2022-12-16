@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_in_app_pip/pip_material_app.dart';
+import 'package:flutter_in_app_pip/pip_params.dart';
 
 class PictureInPicture {
   static bool isActive = false;
@@ -14,8 +15,7 @@ class PictureInPicture {
     isActive = true;
   }
 
-  static void updatePiPWindowSize(
-      {required double height, required double width}) {
-    pipKey.currentState?.updatePiPWindowSize(height: height, width: width);
+  static void updatePiPParams({required PiPParams pipParams}) {
+    pipKey.currentState?.updatePiPParams(pipParams: pipParams);
   }
 }
