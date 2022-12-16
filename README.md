@@ -13,6 +13,7 @@ Written completely in dart.
 
 * Provides the ability to update the size of the pip widget later after starting pip.
 
+* Provides the ability to set the borders to which pip can be dragged.
 
 ## Getting started
 
@@ -20,7 +21,7 @@ Written completely in dart.
 
 * Replace your MaterialApp with PiPMaterialApp. 
 
-* Optionally provide the pipHeight and pipWidth parameters. These correspond to the height and width of your pip widget.
+* Optionally provide the pip parameters. These correspond to various parameters such as height and width of your pip widget.
 
 
 ## Usage
@@ -81,9 +82,17 @@ PiPCapableWidget(
 );
 ```
 
-Update the size of the pip view like below:
+Update the parameters of the pip view like below:
 ```dart
-PictureInPicture.updatePiPWindowSize(height: height, width: width);
+PictureInPicture.updatePiPParams(
+                    pipParams: PiPParams(
+                        floatingHeight: 144,
+                        floatingWidth: 256,
+                        bottomSpace: 64,
+                        leftSpace: 64,
+                        rightSpace: 64,
+                        topSpace: 64),
+                  );
 ```
 
 ## Note

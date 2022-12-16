@@ -1,3 +1,7 @@
+## 1.3.0
+* Added ability to set borders to which pip window can be dragged.
+* Added pipParams instead of pipWindowHeight and pipWindowWidth and added more parameters(customizability).
+
 ## 1.2.0
 * Removed unnecessary Navigator that was behaving as root navigator.
 * Added NavigatablePiPWidget which allows navigation inside the PiP Window.

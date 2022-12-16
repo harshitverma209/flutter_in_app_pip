@@ -151,9 +151,9 @@ class MovableOverlayState extends State<MovableOverlay>
         final width = constraints.maxWidth;
         final height = constraints.maxHeight;
         double? floatingWidth =
-            widget.topWidget != null ? widget.pipParams.floatingWidth : 0;
+            widget.topWidget != null ? widget.pipParams.pipWindowWidth : 0;
         double? floatingHeight =
-            widget.topWidget != null ? widget.pipParams.floatingHeight : 0;
+            widget.topWidget != null ? widget.pipParams.pipWindowHeight : 0;
 
         final floatingWidgetSize = Size(floatingWidth, floatingHeight);
         final fullWidgetSize = Size(width, height);
