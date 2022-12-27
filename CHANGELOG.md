@@ -1,3 +1,6 @@
+## 1.5.0
+* Minor Fixes.
+
 ## 1.4.0
 * Fixed a major bug where turning pip on/off or updating it caused the whole MaterialApp to rebuild.
 * Fixed a bug where in some cases, updatePipParams was giving 'markNeedsRebuild' error.
