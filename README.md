@@ -15,6 +15,14 @@ Written completely in dart.
 
 * Provides the ability to set the borders to which pip can be dragged.
 
+* Provides the ability to make the window resizable(pinch-in/out).
+
+* Provides the ability to make the window non-movable.
+
+* Provides the ability to set the initial corner of the PIP window.
+
+* Provides the ability to set minimum and maximum size of the PIP window, if resizable.
+
 ## Getting started
 
 * Import the package.
@@ -86,12 +94,18 @@ Update the parameters of the pip view like below:
 ```dart
 PictureInPicture.updatePiPParams(
                     pipParams: PiPParams(
-                        floatingHeight: 144,
-                        floatingWidth: 256,
+                        pipWindowHeight: 144,
+                        pipWindowWidth: 256,
                         bottomSpace: 64,
                         leftSpace: 64,
                         rightSpace: 64,
-                        topSpace: 64),
+                        topSpace: 64,
+                        maxSize: Size(256, 144),
+                        minSize: Size(144, 108),
+                        movable: true,
+                        resizable: false,
+                        initialCorner: PIPViewCorner.bottomRight,
+                        ),
                   );
 ```
 
