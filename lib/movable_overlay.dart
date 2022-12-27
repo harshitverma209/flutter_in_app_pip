@@ -40,6 +40,7 @@ class MovableOverlayState extends State<MovableOverlay>
   Widget? _bottomWidgetGhost;
   Map<PIPViewCorner, Offset> _offsets = {};
   final defaultAnimationDuration = const Duration(milliseconds: 200);
+  Widget? bottomChild;
 
   @override
   void initState() {
@@ -53,13 +54,14 @@ class MovableOverlayState extends State<MovableOverlay>
       duration: defaultAnimationDuration,
       vsync: this,
     );
+    bottomChild = widget.bottomWidget;
   }
 
   @override
   void didUpdateWidget(covariant MovableOverlay oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (_isFloating) {
-      if (widget.topWidget == null || widget.bottomWidget == null) {
+      if (widget.topWidget == null || bottomChild == null) {
         _isFloating = false;
         _bottomWidgetGhost = oldWidget.bottomWidget;
         _toggleFloatingAnimationController.reverse().whenCompleteOrCancel(() {
@@ -69,7 +71,7 @@ class MovableOverlayState extends State<MovableOverlay>
         });
       }
     } else {
-      if (widget.topWidget != null && widget.bottomWidget != null) {
+      if (widget.topWidget != null && bottomChild != null) {
         _isFloating = true;
         _toggleFloatingAnimationController.forward();
       }
@@ -147,7 +149,7 @@ class MovableOverlayState extends State<MovableOverlay>
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final bottomWidget = widget.bottomWidget ?? _bottomWidgetGhost;
+        final bottomWidget = bottomChild ?? _bottomWidgetGhost;
         final width = constraints.maxWidth;
         final height = constraints.maxHeight;
         double? floatingWidth =
@@ -168,7 +170,7 @@ class MovableOverlayState extends State<MovableOverlay>
 
         return Stack(
           children: <Widget>[
-            if (bottomWidget != null) bottomWidget,
+            if (bottomWidget != null) Center(child: bottomWidget),
             if (widget.topWidget != null)
               AnimatedBuilder(
                 animation: Listenable.merge([

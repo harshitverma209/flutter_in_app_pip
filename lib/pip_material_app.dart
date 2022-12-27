@@ -472,7 +472,7 @@ class PiPMaterialAppState extends State<PiPMaterialApp> {
 
   void updatePiPParams({required PiPParams pipParams}) {
     this.pipParams = pipParams;
-    setState(() {});
+    Future.delayed(const Duration(seconds: 0)).then((value) => setState(() {}));
   }
 
   @override
