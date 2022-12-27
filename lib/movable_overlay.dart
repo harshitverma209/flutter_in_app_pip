@@ -63,6 +63,7 @@ class MovableOverlayState extends State<MovableOverlay>
   void didUpdateWidget(covariant MovableOverlay oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (_isFloating) {
+      _scaleFactor = 1;
       if (widget.topWidget == null || bottomChild == null) {
         _isFloating = false;
         _bottomWidgetGhost = oldWidget.bottomWidget;
