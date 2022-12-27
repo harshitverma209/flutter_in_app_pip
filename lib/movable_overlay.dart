@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_in_app_pip/pip_params.dart';
+import 'package:flutter_in_app_pip/pip_view_corner.dart';
 
 class MovableOverlay extends StatefulWidget {
-  final PIPViewCorner initialCorner;
-
   final PiPParams pipParams;
   final bool avoidKeyboard;
   final Widget? topWidget;
@@ -17,7 +16,6 @@ class MovableOverlay extends StatefulWidget {
 
   const MovableOverlay({
     Key? key,
-    this.initialCorner = PIPViewCorner.topRight,
     this.avoidKeyboard = true,
     this.topWidget,
     this.bottomWidget,
@@ -42,10 +40,14 @@ class MovableOverlayState extends State<MovableOverlay>
   final defaultAnimationDuration = const Duration(milliseconds: 200);
   Widget? bottomChild;
 
+  double _scaleFactor = 1.0;
+
+  double _baseScaleFactor = 1.0;
+
   @override
   void initState() {
     super.initState();
-    _corner = widget.initialCorner;
+    _corner = widget.pipParams.initialCorner;
     _toggleFloatingAnimationController = AnimationController(
       duration: defaultAnimationDuration,
       vsync: this,
@@ -95,26 +97,17 @@ class MovableOverlayState extends State<MovableOverlay>
         _dragAnimationController.isAnimating;
   }
 
-  void _onPanUpdate(DragUpdateDetails details) {
+  void _onPanUpdate(ScaleUpdateDetails details) {
     if (!_isDragging) return;
     setState(() {
       _dragOffset = _dragOffset.translate(
-        details.delta.dx,
-        details.delta.dy,
+        details.focalPointDelta.dx,
+        details.focalPointDelta.dy,
       );
     });
   }
 
-  void _onPanCancel() {
-    if (!_isDragging) return;
-    setState(() {
-      _dragAnimationController.value = 0;
-      _dragOffset = Offset.zero;
-      _isDragging = false;
-    });
-  }
-
-  void _onPanEnd(DragEndDetails details) {
+  void _onPanEnd(ScaleEndDetails details) {
     if (!_isDragging) return;
 
     final nearestCorner = _calculateNearestCorner(
@@ -131,7 +124,7 @@ class MovableOverlayState extends State<MovableOverlay>
     });
   }
 
-  void _onPanStart(DragStartDetails details) {
+  void _onPanStart(ScaleStartDetails details) {
     if (_isAnimating()) return;
     setState(() {
       _dragOffset = _offsets[_corner]!;
@@ -152,10 +145,14 @@ class MovableOverlayState extends State<MovableOverlay>
         final bottomWidget = bottomChild ?? _bottomWidgetGhost;
         final width = constraints.maxWidth;
         final height = constraints.maxHeight;
-        double? floatingWidth =
-            widget.topWidget != null ? widget.pipParams.pipWindowWidth : 0;
-        double? floatingHeight =
-            widget.topWidget != null ? widget.pipParams.pipWindowHeight : 0;
+        double? floatingWidth;
+        floatingWidth = widget.topWidget != null
+            ? widget.pipParams.pipWindowWidth * _scaleFactor
+            : 0;
+        double? floatingHeight;
+        floatingHeight = widget.topWidget != null
+            ? widget.pipParams.pipWindowHeight * _scaleFactor
+            : 0;
 
         final floatingWidgetSize = Size(floatingWidth, floatingHeight);
         final fullWidgetSize = Size(width, height);
@@ -209,10 +206,9 @@ class MovableOverlayState extends State<MovableOverlay>
                     left: floatingOffset.dx,
                     top: floatingOffset.dy,
                     child: GestureDetector(
-                      onPanStart: _isFloating ? _onPanStart : null,
-                      onPanUpdate: _isFloating ? _onPanUpdate : null,
-                      onPanCancel: _isFloating ? _onPanCancel : null,
-                      onPanEnd: _isFloating ? _onPanEnd : null,
+                      onScaleStart: _isFloating ? _onScaleStart : null,
+                      onScaleEnd: _isFloating ? _onScaleEnd : null,
+                      onScaleUpdate: _isFloating ? _onScaleUpdate : null,
                       onTap: widget.onTapTopWidget,
                       child: SizedBox(
                         width: width,
@@ -228,6 +224,48 @@ class MovableOverlayState extends State<MovableOverlay>
         );
       },
     );
+  }
+
+  void _onScaleStart(ScaleStartDetails details) {
+    if (widget.pipParams.movable) {
+      _onPanStart(details);
+    }
+    if (widget.pipParams.resizable) {
+      _baseScaleFactor = _scaleFactor;
+    }
+  }
+
+  void _onScaleEnd(ScaleEndDetails details) {
+    if (widget.pipParams.movable) {
+      _onPanEnd(details);
+    }
+  }
+
+  void _onScaleUpdate(ScaleUpdateDetails details) {
+    if (widget.pipParams.movable) {
+      _onPanUpdate(details);
+    }
+    if (widget.pipParams.resizable == false || details.scale == 1.0) {
+      return;
+    }
+    if (details.scale * _baseScaleFactor * widget.pipParams.pipWindowWidth >
+        widget.pipParams.maxSize.width) {
+      return;
+    }
+    if (details.scale * _baseScaleFactor * widget.pipParams.pipWindowWidth <
+        widget.pipParams.minSize.width) {
+      return;
+    }
+    if (details.scale * _baseScaleFactor * widget.pipParams.pipWindowHeight >
+        widget.pipParams.maxSize.height) {
+      return;
+    }
+    if (details.scale * _baseScaleFactor * widget.pipParams.pipWindowHeight <
+        widget.pipParams.minSize.height) {
+      return;
+    }
+    _scaleFactor = (_baseScaleFactor * details.scale);
+    setState(() {});
   }
 
   Map<PIPViewCorner, Offset> _calculateOffsets({
@@ -269,13 +307,6 @@ class MovableOverlayState extends State<MovableOverlay>
 
     return offsets;
   }
-}
-
-enum PIPViewCorner {
-  topLeft,
-  topRight,
-  bottomLeft,
-  bottomRight,
 }
 
 class _CornerDistance {
