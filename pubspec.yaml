@@ -1,6 +1,6 @@
 name: flutter_in_app_pip
 description: A Flutter Package to easily implement in-app pip in a flutter application.
-version: 1.3.0
+version: 1.4.0
 
 environment:
   sdk: '>=2.18.4 <3.0.0'
