@@ -1,6 +1,6 @@
 ## 1.4.0
 * Fixed a major bug where turning pip on/off or updating it caused the whole MaterialApp to rebuild.
-* Fixed a bug where in some cases, updataPipParams was giving 'markNeedsRebuild' error.
+* Fixed a bug where in some cases, updatePipParams was giving 'markNeedsRebuild' error.
 
 ## 1.3.0
 * Added ability to set borders to which pip window can be dragged.
