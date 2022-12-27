@@ -1,3 +1,8 @@
+## 1.6.0
+* Added ability to make the PIP non-movable. Use `movable:false` in `PIPParams`.
+* Added ability to make the pip resizable(via pinch in/out). Use `resizable:true` in `pipParams`. Additionally, you can also specify the minSize and maxSize for the PIP window.
+* Added ability to specify the initial corner for the PIP Window. 
+
 ## 1.5.0
 * Minor Fixes.
 
