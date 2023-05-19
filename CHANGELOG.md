@@ -1,3 +1,6 @@
+## 1.7.1
+* Fixes to PiPMaterialApp.router(still experimental).
+
 ## 1.7.0
 * Upgraded package to Flutter 3.7.3.
 * Added all updated parameters from MaterialApp to PiPMaterialApp.

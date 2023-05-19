@@ -446,6 +446,7 @@ class PiPMaterialApp extends StatefulWidget {
   /// The [HeroController] used for Material page transitions.
   ///
   /// Used by the [MaterialApp].
+
   static HeroController createMaterialHeroController() {
     return HeroController(
       createRectTween: (Rect? begin, Rect? end) {
@@ -454,8 +455,9 @@ class PiPMaterialApp extends StatefulWidget {
     );
   }
 
+  bool routerApp = false;
   final PiPParams pipParams;
-  const PiPMaterialApp.router({
+  PiPMaterialApp.router({
     super.key,
     this.scaffoldMessengerKey,
     this.routeInformationProvider,
@@ -506,6 +508,7 @@ class PiPMaterialApp extends StatefulWidget {
         onGenerateInitialRoutes = null,
         onUnknownRoute = null,
         routes = null,
+        routerApp = true,
         initialRoute = null;
 
   PiPMaterialApp({
@@ -592,50 +595,100 @@ class PiPMaterialAppState extends State<PiPMaterialApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      actions: widget.actions,
-      builder: (context, child) {
-        return MovableOverlay(
-          avoidKeyboard: true,
-          bottomWidget:
-              widget.builder != null ? widget.builder!(context, child) : child,
-          topWidget: _overlay,
-          pipParams: pipParams,
-        );
-      },
-      checkerboardOffscreenLayers: widget.checkerboardOffscreenLayers,
-      checkerboardRasterCacheImages: widget.checkerboardRasterCacheImages,
-      color: widget.color,
-      darkTheme: widget.darkTheme,
-      debugShowCheckedModeBanner: widget.debugShowCheckedModeBanner,
-      debugShowMaterialGrid: widget.debugShowMaterialGrid,
-      highContrastDarkTheme: widget.highContrastDarkTheme,
-      highContrastTheme: widget.highContrastTheme,
-      home: widget.home,
-      initialRoute: widget.initialRoute,
-      locale: widget.locale,
-      localeListResolutionCallback: widget.localeListResolutionCallback,
-      localeResolutionCallback: widget.localeResolutionCallback,
-      localizationsDelegates: widget.localizationsDelegates,
-      navigatorKey: widget.navigatorKey,
-      navigatorObservers:
-          widget.navigatorObservers ?? const <NavigatorObserver>[],
-      onGenerateInitialRoutes: widget.onGenerateInitialRoutes,
-      onGenerateRoute: widget.onGenerateRoute,
-      onGenerateTitle: widget.onGenerateTitle,
-      onUnknownRoute: widget.onUnknownRoute,
-      restorationScopeId: widget.restorationScopeId,
-      routes: widget.routes ?? const <String, WidgetBuilder>{},
-      scaffoldMessengerKey: widget.scaffoldMessengerKey,
-      scrollBehavior: widget.scrollBehavior,
-      shortcuts: widget.shortcuts,
-      showPerformanceOverlay: widget.showPerformanceOverlay,
-      showSemanticsDebugger: widget.showSemanticsDebugger,
-      supportedLocales: widget.supportedLocales,
-      theme: widget.theme,
-      themeMode: widget.themeMode,
-      title: widget.title,
-      useInheritedMediaQuery: widget.useInheritedMediaQuery,
-    );
+    if (widget.routerApp == null) {
+      return MaterialApp(
+        actions: widget.actions,
+        builder: (context, child) {
+          return MovableOverlay(
+            avoidKeyboard: true,
+            bottomWidget: widget.builder != null
+                ? widget.builder!(context, child)
+                : child,
+            topWidget: _overlay,
+            pipParams: pipParams,
+          );
+        },
+        checkerboardOffscreenLayers: widget.checkerboardOffscreenLayers,
+        checkerboardRasterCacheImages: widget.checkerboardRasterCacheImages,
+        color: widget.color,
+        darkTheme: widget.darkTheme,
+        debugShowCheckedModeBanner: widget.debugShowCheckedModeBanner,
+        debugShowMaterialGrid: widget.debugShowMaterialGrid,
+        highContrastDarkTheme: widget.highContrastDarkTheme,
+        highContrastTheme: widget.highContrastTheme,
+        home: widget.home,
+        themeAnimationCurve: widget.themeAnimationCurve,
+        themeAnimationDuration: widget.themeAnimationDuration,
+        initialRoute: widget.initialRoute,
+        locale: widget.locale,
+        localeListResolutionCallback: widget.localeListResolutionCallback,
+        localeResolutionCallback: widget.localeResolutionCallback,
+        localizationsDelegates: widget.localizationsDelegates,
+        navigatorKey: widget.navigatorKey,
+        navigatorObservers:
+            widget.navigatorObservers ?? const <NavigatorObserver>[],
+        onGenerateInitialRoutes: widget.onGenerateInitialRoutes,
+        onGenerateRoute: widget.onGenerateRoute,
+        onGenerateTitle: widget.onGenerateTitle,
+        onUnknownRoute: widget.onUnknownRoute,
+        restorationScopeId: widget.restorationScopeId,
+        routes: widget.routes ?? const <String, WidgetBuilder>{},
+        scaffoldMessengerKey: widget.scaffoldMessengerKey,
+        scrollBehavior: widget.scrollBehavior,
+        shortcuts: widget.shortcuts,
+        showPerformanceOverlay: widget.showPerformanceOverlay,
+        showSemanticsDebugger: widget.showSemanticsDebugger,
+        supportedLocales: widget.supportedLocales,
+        theme: widget.theme,
+        themeMode: widget.themeMode,
+        title: widget.title,
+        useInheritedMediaQuery: widget.useInheritedMediaQuery,
+      );
+    } else {
+      return MaterialApp.router(
+        actions: widget.actions,
+        builder: (context, child) {
+          return MovableOverlay(
+            avoidKeyboard: true,
+            bottomWidget: widget.builder != null
+                ? widget.builder!(context, child)
+                : child,
+            topWidget: _overlay,
+            pipParams: pipParams,
+          );
+        },
+        routeInformationParser: widget.routeInformationParser,
+        backButtonDispatcher: widget.backButtonDispatcher,
+        routeInformationProvider: widget.routeInformationProvider,
+        routerConfig: widget.routerConfig,
+        routerDelegate: widget.routerDelegate,
+        checkerboardOffscreenLayers: widget.checkerboardOffscreenLayers,
+        checkerboardRasterCacheImages: widget.checkerboardRasterCacheImages,
+        color: widget.color,
+        darkTheme: widget.darkTheme,
+        debugShowCheckedModeBanner: widget.debugShowCheckedModeBanner,
+        debugShowMaterialGrid: widget.debugShowMaterialGrid,
+        highContrastDarkTheme: widget.highContrastDarkTheme,
+        highContrastTheme: widget.highContrastTheme,
+        themeAnimationCurve: widget.themeAnimationCurve,
+        themeAnimationDuration: widget.themeAnimationDuration,
+        locale: widget.locale,
+        localeListResolutionCallback: widget.localeListResolutionCallback,
+        localeResolutionCallback: widget.localeResolutionCallback,
+        localizationsDelegates: widget.localizationsDelegates,
+        onGenerateTitle: widget.onGenerateTitle,
+        restorationScopeId: widget.restorationScopeId,
+        scaffoldMessengerKey: widget.scaffoldMessengerKey,
+        scrollBehavior: widget.scrollBehavior,
+        shortcuts: widget.shortcuts,
+        showPerformanceOverlay: widget.showPerformanceOverlay,
+        showSemanticsDebugger: widget.showSemanticsDebugger,
+        supportedLocales: widget.supportedLocales,
+        theme: widget.theme,
+        themeMode: widget.themeMode,
+        title: widget.title,
+        useInheritedMediaQuery: widget.useInheritedMediaQuery,
+      );
+    }
   }
 }
