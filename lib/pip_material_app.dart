@@ -595,7 +595,7 @@ class PiPMaterialAppState extends State<PiPMaterialApp> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.routerApp == null) {
+    if (widget.routerApp == false) {
       return MaterialApp(
         actions: widget.actions,
         builder: (context, child) {
