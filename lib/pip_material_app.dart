@@ -27,7 +27,7 @@ class PiPMaterialApp extends StatefulWidget {
   /// new route.
   ///
   /// {@macro flutter.widgets.widgetsApp.routes}
-  final Map<String, WidgetBuilder> routes;
+  final Map<String, WidgetBuilder>? routes;
 
   /// {@macro flutter.widgets.widgetsApp.initialRoute}
   final String? initialRoute;
@@ -42,7 +42,7 @@ class PiPMaterialApp extends StatefulWidget {
   final RouteFactory? onUnknownRoute;
 
   /// {@macro flutter.widgets.widgetsApp.navigatorObservers}
-  final List<NavigatorObserver> navigatorObservers;
+  final List<NavigatorObserver>? navigatorObservers;
 
   /// {@macro flutter.widgets.widgetsApp.routeInformationProvider}
   final RouteInformationProvider? routeInformationProvider;
@@ -172,6 +172,30 @@ class PiPMaterialApp extends StatefulWidget {
   ///    system what kind of theme is being used.
   final ThemeMode? themeMode;
 
+  /// The duration of animated theme changes.
+  ///
+  /// When the theme changes (either by the [theme], [darkTheme] or [themeMode]
+  /// parameters changing) it is animated to the new theme over time.
+  /// The [themeAnimationDuration] determines how long this animation takes.
+  ///
+  /// To have the theme change immediately, you can set this to [Duration.zero].
+  ///
+  /// The default is [kThemeAnimationDuration].
+  ///
+  /// See also:
+  ///   [themeAnimationCurve], which defines the curve used for the animation.
+  final Duration themeAnimationDuration;
+
+  /// The curve to apply when animating theme changes.
+  ///
+  /// The default is [Curves.linear].
+  ///
+  /// This is ignored if [themeAnimationDuration] is [Duration.zero].
+  ///
+  /// See also:
+  ///   [themeAnimationDuration], which defines how long the animation is.
+  final Curve themeAnimationCurve;
+
   /// {@macro flutter.widgets.widgetsApp.color}
   final Color? color;
 
@@ -185,16 +209,19 @@ class PiPMaterialApp extends StatefulWidget {
   /// and list the [supportedLocales] that the application can handle.
   ///
   /// ```dart
-  /// import 'package:flutter_localizations/flutter_localizations.dart';
-  /// MaterialApp(
-  ///   localizationsDelegates: [
-  ///     // ... app-specific localization delegate[s] here
+  /// // The GlobalMaterialLocalizations and GlobalWidgetsLocalizations
+  /// // classes require the following import:
+  /// // import 'package:flutter_localizations/flutter_localizations.dart';
+  ///
+  /// const MaterialApp(
+  ///   localizationsDelegates: <LocalizationsDelegate<Object>>[
+  ///     // ... app-specific localization delegate(s) here
   ///     GlobalMaterialLocalizations.delegate,
   ///     GlobalWidgetsLocalizations.delegate,
   ///   ],
-  ///   supportedLocales: [
-  ///     const Locale('en', 'US'), // English
-  ///     const Locale('he', 'IL'), // Hebrew
+  ///   supportedLocales: <Locale>[
+  ///     Locale('en', 'US'), // English
+  ///     Locale('he', 'IL'), // Hebrew
   ///     // ... other locales the app supports
   ///   ],
   ///   // ...
@@ -214,33 +241,39 @@ class PiPMaterialApp extends StatefulWidget {
   /// [LocalizationsDelegate<MaterialLocalizations>] whose load methods return
   /// custom versions of [WidgetsLocalizations] or [MaterialLocalizations].
   ///
-  /// For example: to add support to [MaterialLocalizations] for a
-  /// locale it doesn't already support, say `const Locale('foo', 'BR')`,
-  /// one could just extend [DefaultMaterialLocalizations]:
+  /// For example: to add support to [MaterialLocalizations] for a locale it
+  /// doesn't already support, say `const Locale('foo', 'BR')`, one first
+  /// creates a subclass of [MaterialLocalizations] that provides the
+  /// translations:
   ///
   /// ```dart
-  /// class FooLocalizations extends DefaultMaterialLocalizations {
-  ///   FooLocalizations(Locale locale) : super(locale);
+  /// class FooLocalizations extends MaterialLocalizations {
+  ///   FooLocalizations();
   ///   @override
-  ///   String get okButtonLabel {
-  ///     if (locale == const Locale('foo', 'BR'))
-  ///       return 'foo';
-  ///     return super.okButtonLabel;
-  ///   }
+  ///   String get okButtonLabel => 'foo';
+  ///   // ...
+  ///   // lots of other getters and methods to override!
   /// }
-  ///
   /// ```
   ///
-  /// A `FooLocalizationsDelegate` is essentially just a method that constructs
-  /// a `FooLocalizations` object. We return a [SynchronousFuture] here because
-  /// no asynchronous work takes place upon "loading" the localizations object.
+  /// One must then create a [LocalizationsDelegate] subclass that can provide
+  /// an instance of the [MaterialLocalizations] subclass. In this case, this is
+  /// essentially just a method that constructs a `FooLocalizations` object. A
+  /// [SynchronousFuture] is used here because no asynchronous work takes place
+  /// upon "loading" the localizations object.
   ///
   /// ```dart
+  /// // continuing from previous example...
   /// class FooLocalizationsDelegate extends LocalizationsDelegate<MaterialLocalizations> {
   ///   const FooLocalizationsDelegate();
   ///   @override
+  ///   bool isSupported(Locale locale) {
+  ///     return locale == const Locale('foo', 'BR');
+  ///   }
+  ///   @override
   ///   Future<FooLocalizations> load(Locale locale) {
-  ///     return SynchronousFuture(FooLocalizations(locale));
+  ///     assert(locale == const Locale('foo', 'BR'));
+  ///     return SynchronousFuture<FooLocalizations>(FooLocalizations());
   ///   }
   ///   @override
   ///   bool shouldReload(FooLocalizationsDelegate old) => false;
@@ -254,9 +287,10 @@ class PiPMaterialApp extends StatefulWidget {
   /// [localizationsDelegates] list.
   ///
   /// ```dart
-  /// MaterialApp(
-  ///   localizationsDelegates: [
-  ///     const FooLocalizationsDelegate(),
+  /// // continuing from previous example...
+  /// const MaterialApp(
+  ///   localizationsDelegates: <LocalizationsDelegate<Object>>[
+  ///     FooLocalizationsDelegate(),
   ///   ],
   ///   // ...
   /// )
@@ -409,19 +443,26 @@ class PiPMaterialApp extends StatefulWidget {
   /// {@macro flutter.widgets.widgetsApp.useInheritedMediaQuery}
   final bool useInheritedMediaQuery;
 
-  final PiPParams pipParams;
+  /// The [HeroController] used for Material page transitions.
+  ///
+  /// Used by the [MaterialApp].
+  static HeroController createMaterialHeroController() {
+    return HeroController(
+      createRectTween: (Rect? begin, Rect? end) {
+        return MaterialRectArcTween(begin: begin, end: end);
+      },
+    );
+  }
 
-  PiPMaterialApp({
-    Key? key,
-    this.navigatorKey,
+  final PiPParams pipParams;
+  const PiPMaterialApp.router({
+    super.key,
     this.scaffoldMessengerKey,
-    this.home,
-    this.routes = const <String, WidgetBuilder>{},
-    this.initialRoute,
-    this.onGenerateRoute,
-    this.onGenerateInitialRoutes,
-    this.onUnknownRoute,
-    this.navigatorObservers = const <NavigatorObserver>[],
+    this.routeInformationProvider,
+    this.routeInformationParser,
+    this.routerDelegate,
+    this.routerConfig,
+    this.backButtonDispatcher,
     this.builder,
     this.title = '',
     this.onGenerateTitle,
@@ -431,6 +472,8 @@ class PiPMaterialApp extends StatefulWidget {
     this.highContrastTheme,
     this.highContrastDarkTheme,
     this.themeMode = ThemeMode.system,
+    this.themeAnimationDuration = kThemeAnimationDuration,
+    this.themeAnimationCurve = Curves.linear,
     this.locale,
     this.localizationsDelegates,
     this.localeListResolutionCallback,
@@ -448,7 +491,73 @@ class PiPMaterialApp extends StatefulWidget {
     this.scrollBehavior,
     this.useInheritedMediaQuery = false,
     this.pipParams = const PiPParams(),
-  })  : routeInformationProvider = null,
+  })  : assert(routerDelegate != null || routerConfig != null),
+        assert(title != null),
+        assert(debugShowMaterialGrid != null),
+        assert(showPerformanceOverlay != null),
+        assert(checkerboardRasterCacheImages != null),
+        assert(checkerboardOffscreenLayers != null),
+        assert(showSemanticsDebugger != null),
+        assert(debugShowCheckedModeBanner != null),
+        navigatorObservers = null,
+        navigatorKey = null,
+        onGenerateRoute = null,
+        home = null,
+        onGenerateInitialRoutes = null,
+        onUnknownRoute = null,
+        routes = null,
+        initialRoute = null;
+
+  PiPMaterialApp({
+    Key? key,
+    this.navigatorKey,
+    this.scaffoldMessengerKey,
+    this.home,
+    Map<String, WidgetBuilder> this.routes = const <String, WidgetBuilder>{},
+    this.initialRoute,
+    this.onGenerateRoute,
+    this.onGenerateInitialRoutes,
+    this.onUnknownRoute,
+    List<NavigatorObserver> this.navigatorObservers =
+        const <NavigatorObserver>[],
+    this.builder,
+    this.title = '',
+    this.onGenerateTitle,
+    this.color,
+    this.theme,
+    this.darkTheme,
+    this.highContrastTheme,
+    this.highContrastDarkTheme,
+    this.themeMode = ThemeMode.system,
+    this.themeAnimationDuration = kThemeAnimationDuration,
+    this.themeAnimationCurve = Curves.linear,
+    this.locale,
+    this.localizationsDelegates,
+    this.localeListResolutionCallback,
+    this.localeResolutionCallback,
+    this.supportedLocales = const <Locale>[Locale('en', 'US')],
+    this.debugShowMaterialGrid = false,
+    this.showPerformanceOverlay = false,
+    this.checkerboardRasterCacheImages = false,
+    this.checkerboardOffscreenLayers = false,
+    this.showSemanticsDebugger = false,
+    this.debugShowCheckedModeBanner = true,
+    this.shortcuts,
+    this.actions,
+    this.restorationScopeId,
+    this.scrollBehavior,
+    this.useInheritedMediaQuery = false,
+    this.pipParams = const PiPParams(),
+  })  : assert(routes != null),
+        assert(navigatorObservers != null),
+        assert(title != null),
+        assert(debugShowMaterialGrid != null),
+        assert(showPerformanceOverlay != null),
+        assert(checkerboardRasterCacheImages != null),
+        assert(checkerboardOffscreenLayers != null),
+        assert(showSemanticsDebugger != null),
+        assert(debugShowCheckedModeBanner != null),
+        routeInformationProvider = null,
         routeInformationParser = null,
         routerDelegate = null,
         backButtonDispatcher = null,
@@ -509,13 +618,14 @@ class PiPMaterialAppState extends State<PiPMaterialApp> {
       localeResolutionCallback: widget.localeResolutionCallback,
       localizationsDelegates: widget.localizationsDelegates,
       navigatorKey: widget.navigatorKey,
-      navigatorObservers: widget.navigatorObservers,
+      navigatorObservers:
+          widget.navigatorObservers ?? const <NavigatorObserver>[],
       onGenerateInitialRoutes: widget.onGenerateInitialRoutes,
       onGenerateRoute: widget.onGenerateRoute,
       onGenerateTitle: widget.onGenerateTitle,
       onUnknownRoute: widget.onUnknownRoute,
       restorationScopeId: widget.restorationScopeId,
-      routes: widget.routes,
+      routes: widget.routes ?? const <String, WidgetBuilder>{},
       scaffoldMessengerKey: widget.scaffoldMessengerKey,
       scrollBehavior: widget.scrollBehavior,
       shortcuts: widget.shortcuts,

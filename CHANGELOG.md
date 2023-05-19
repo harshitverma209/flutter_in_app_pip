@@ -1,3 +1,8 @@
+## 1.7.0
+* Upgraded package to Flutter 3.7.3.
+* Added all updated parameters from MaterialApp to PiPMaterialApp.
+* Added PiPMaterialApp.router(experimental) for usage of Go Router and similar navigator v2 packages.
+
 ## 1.6.0
 * Added ability to make the PIP non-movable. Use `movable:false` in `PIPParams`.
 * Added ability to make the pip resizable(via pinch in/out). Use `resizable:true` in `pipParams`. Additionally, you can also specify the minSize and maxSize for the PIP window.
