@@ -1,3 +1,6 @@
+## 1.7.3
+* Fixes to PiPMaterialApp.router(Beta now).
+
 ## 1.7.2
 * Hotfix: PiPMaterialApp Not working due to typo.
 

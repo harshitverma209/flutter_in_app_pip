@@ -455,10 +455,10 @@ class PiPMaterialApp extends StatefulWidget {
     );
   }
 
-  bool routerApp = false;
+  final bool routerApp;
   final PiPParams pipParams;
   PiPMaterialApp.router({
-    super.key,
+    Key? key,
     this.scaffoldMessengerKey,
     this.routeInformationProvider,
     this.routeInformationParser,
@@ -494,13 +494,6 @@ class PiPMaterialApp extends StatefulWidget {
     this.useInheritedMediaQuery = false,
     this.pipParams = const PiPParams(),
   })  : assert(routerDelegate != null || routerConfig != null),
-        assert(title != null),
-        assert(debugShowMaterialGrid != null),
-        assert(showPerformanceOverlay != null),
-        assert(checkerboardRasterCacheImages != null),
-        assert(checkerboardOffscreenLayers != null),
-        assert(showSemanticsDebugger != null),
-        assert(debugShowCheckedModeBanner != null),
         navigatorObservers = null,
         navigatorKey = null,
         onGenerateRoute = null,
@@ -509,7 +502,10 @@ class PiPMaterialApp extends StatefulWidget {
         onUnknownRoute = null,
         routes = null,
         routerApp = true,
-        initialRoute = null;
+        initialRoute = null,
+        super(
+          key: PictureInPicture.pipKey,
+        );
 
   PiPMaterialApp({
     Key? key,
@@ -551,19 +547,11 @@ class PiPMaterialApp extends StatefulWidget {
     this.scrollBehavior,
     this.useInheritedMediaQuery = false,
     this.pipParams = const PiPParams(),
-  })  : assert(routes != null),
-        assert(navigatorObservers != null),
-        assert(title != null),
-        assert(debugShowMaterialGrid != null),
-        assert(showPerformanceOverlay != null),
-        assert(checkerboardRasterCacheImages != null),
-        assert(checkerboardOffscreenLayers != null),
-        assert(showSemanticsDebugger != null),
-        assert(debugShowCheckedModeBanner != null),
-        routeInformationProvider = null,
+  })  : routeInformationProvider = null,
         routeInformationParser = null,
         routerDelegate = null,
         backButtonDispatcher = null,
+        routerApp = false,
         routerConfig = null,
         super(
           key: PictureInPicture.pipKey,
