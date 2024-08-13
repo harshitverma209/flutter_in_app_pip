@@ -27,7 +27,7 @@ Written completely in dart.
 
 * Import the package.
 
-* Replace your MaterialApp with PiPMaterialApp. 
+* Replace your `MaterialApp` with `PiPMaterialApp` (If using `MaterialApp.router`, you can replace it with `PiPMaterialApp.router`).
 
 * Optionally provide the pip parameters. These correspond to various parameters such as height and width of your pip widget.
 
@@ -110,4 +110,4 @@ PictureInPicture.updatePiPParams(
 ```
 
 ## Note
-That's it. Enjoy!
+That's it. Enjoy! Also, this package is 100% compatible with my other flutter plugin [android_pip](https://pub.dev/packages/android_pip)

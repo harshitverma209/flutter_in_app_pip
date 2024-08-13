@@ -1,3 +1,8 @@
+## 1.7.4
+* `PiPMaterialApp.router` is now stable.
+* Added repository link and homepage.
+* Added newly introduced `MaterialApp` parameters to `PiPMaterialApp` and `PiPMaterialApp.router`.
+
 ## 1.7.3
 * Fixes to PiPMaterialApp.router(Beta now).
 

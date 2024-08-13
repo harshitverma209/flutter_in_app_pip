@@ -41,6 +41,10 @@ class PiPMaterialApp extends StatefulWidget {
   /// {@macro flutter.widgets.widgetsApp.onUnknownRoute}
   final RouteFactory? onUnknownRoute;
 
+  /// {@macro flutter.widgets.widgetsApp.onNavigationNotification}
+  final NotificationListenerCallback<NavigationNotification>?
+      onNavigationNotification;
+
   /// {@macro flutter.widgets.widgetsApp.navigatorObservers}
   final List<NavigatorObserver>? navigatorObservers;
 
@@ -443,6 +447,28 @@ class PiPMaterialApp extends StatefulWidget {
   /// {@macro flutter.widgets.widgetsApp.useInheritedMediaQuery}
   final bool useInheritedMediaQuery;
 
+  /// Used to override the theme animation curve and duration.
+  ///
+  /// If [AnimationStyle.duration] is provided, it will be used to override
+  /// the theme animation duration in the underlying [AnimatedTheme] widget.
+  /// If it is null, then [themeAnimationDuration] will be used. Otherwise,
+  /// defaults to 200ms.
+  ///
+  /// If [AnimationStyle.curve] is provided, it will be used to override
+  /// the theme animation curve in the underlying [AnimatedTheme] widget.
+  /// If it is null, then [themeAnimationCurve] will be used. Otherwise,
+  /// defaults to [Curves.linear].
+  ///
+  /// To disable the theme animation, use [AnimationStyle.noAnimation].
+  ///
+  /// {@tool dartpad}
+  /// This sample showcases how to override the theme animation curve and
+  /// duration in the [MaterialApp] widget using [AnimationStyle].
+  ///
+  /// ** See code in examples/api/lib/material/app/app.0.dart **
+  /// {@end-tool}
+  final AnimationStyle? themeAnimationStyle;
+
   /// The [HeroController] used for Material page transitions.
   ///
   /// Used by the [MaterialApp].
@@ -491,7 +517,14 @@ class PiPMaterialApp extends StatefulWidget {
     this.actions,
     this.restorationScopeId,
     this.scrollBehavior,
+    @Deprecated(
+      'Remove this parameter as it is now ignored. '
+      'MaterialApp never introduces its own MediaQuery; the View widget takes care of that. '
+      'This feature was deprecated after v3.7.0-29.0.pre.',
+    )
     this.useInheritedMediaQuery = false,
+    this.onNavigationNotification,
+    this.themeAnimationStyle,
     this.pipParams = const PiPParams(),
   })  : assert(routerDelegate != null || routerConfig != null),
         navigatorObservers = null,
@@ -545,7 +578,14 @@ class PiPMaterialApp extends StatefulWidget {
     this.actions,
     this.restorationScopeId,
     this.scrollBehavior,
+    @Deprecated(
+      'Remove this parameter as it is now ignored. '
+      'MaterialApp never introduces its own MediaQuery; the View widget takes care of that. '
+      'This feature was deprecated after v3.7.0-29.0.pre.',
+    )
     this.useInheritedMediaQuery = false,
+    this.onNavigationNotification,
+    this.themeAnimationStyle,
     this.pipParams = const PiPParams(),
   })  : routeInformationProvider = null,
         routeInformationParser = null,
@@ -630,7 +670,8 @@ class PiPMaterialAppState extends State<PiPMaterialApp> {
         theme: widget.theme,
         themeMode: widget.themeMode,
         title: widget.title,
-        useInheritedMediaQuery: widget.useInheritedMediaQuery,
+        onNavigationNotification: widget.onNavigationNotification,
+        themeAnimationStyle: widget.themeAnimationStyle,
       );
     } else {
       return MaterialApp.router(
@@ -675,7 +716,8 @@ class PiPMaterialAppState extends State<PiPMaterialApp> {
         theme: widget.theme,
         themeMode: widget.themeMode,
         title: widget.title,
-        useInheritedMediaQuery: widget.useInheritedMediaQuery,
+        onNavigationNotification: widget.onNavigationNotification,
+        themeAnimationStyle: widget.themeAnimationStyle,
       );
     }
   }
