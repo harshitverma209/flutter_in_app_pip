@@ -46,13 +46,34 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   void _startPip() {
     PictureInPicture.startPiP(
-      pipWidget: SizedBox(
-        width: MediaQuery.of(context).size.width * .7,
-        child: AspectRatio(
-          aspectRatio: 16 / 9,
-          child: Image.network(
-            'https://picsum.photos/200/300',
-            fit: BoxFit.fill,
+      pipWidget: Material(
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width * .7,
+          child: AspectRatio(
+            aspectRatio: 16 / 9,
+            child: Container(
+              color: Theme.of(context).primaryColorDark,
+              child: const Center(
+                child: Text.rich(
+                  TextSpan(children: [
+                    TextSpan(
+                      text: 'This is in app PiP\n',
+                      style: TextStyle(
+                        fontSize: 30,
+                        color: Colors.white,
+                      ),
+                    ),
+                    TextSpan(
+                      text: 'You can drag this to any corner',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ]),
+                ),
+              ),
+            ),
           ),
         ),
       ),
