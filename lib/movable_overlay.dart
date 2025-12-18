@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_in_app_pip/pip_params.dart';
 import 'package:flutter_in_app_pip/pip_view_corner.dart';
+import 'package:flutter_in_app_pip/pip_view_edge.dart';
 
 class MovableOverlay extends StatefulWidget {
   final PiPParams pipParams;
   final bool avoidKeyboard;
+  final bool allowPositionAlongEdges;
   final Widget? topWidget;
   final Widget? bottomWidget;
 
@@ -17,6 +19,7 @@ class MovableOverlay extends StatefulWidget {
   const MovableOverlay({
     Key? key,
     this.avoidKeyboard = true,
+    this.allowPositionAlongEdges = true,
     this.topWidget,
     this.bottomWidget,
     this.onTapTopWidget,
@@ -32,11 +35,16 @@ class MovableOverlayState extends State<MovableOverlay>
   late final AnimationController _toggleFloatingAnimationController;
   late final AnimationController _dragAnimationController;
   late PIPViewCorner _corner;
+  PIPViewEdge? _edge;
+  double? _edgePosition;
   Offset _dragOffset = Offset.zero;
   var _isDragging = false;
   var _isFloating = false;
   Widget? _bottomWidgetGhost;
   Map<PIPViewCorner, Offset> _offsets = {};
+  late Size _widgetSize;
+  late Size _windowSize;
+  late EdgeInsets _padding;
   final defaultAnimationDuration = const Duration(milliseconds: 200);
   Widget? bottomChild;
 
@@ -91,6 +99,9 @@ class MovableOverlayState extends State<MovableOverlay>
       widgetSize: widgetSize,
       windowPadding: windowPadding,
     );
+    _widgetSize = widgetSize;
+    _windowSize = spaceSize;
+    _padding = windowPadding;
   }
 
   bool _isAnimating() {
@@ -115,7 +126,13 @@ class MovableOverlayState extends State<MovableOverlay>
       offset: _dragOffset,
       offsets: _offsets,
     );
+    final (nearestEdge, positionOnEdge) = _calculateNearestEdge(
+        offset: _dragOffset, widgetSize: _widgetSize, windowSize: _windowSize);
     setState(() {
+      if (widget.allowPositionAlongEdges) {
+        _edge = nearestEdge;
+        _edgePosition = positionOnEdge;
+      }
       _corner = nearestCorner;
       _isDragging = false;
     });
@@ -128,7 +145,7 @@ class MovableOverlayState extends State<MovableOverlay>
   void _onPanStart(ScaleStartDetails details) {
     if (_isAnimating()) return;
     setState(() {
-      _dragOffset = _offsets[_corner]!;
+      _dragOffset = _calculateOffset()!;
       _isDragging = true;
     });
   }
@@ -164,7 +181,7 @@ class MovableOverlayState extends State<MovableOverlay>
           windowPadding: windowPadding,
         );
 
-        final calculatedOffset = _offsets[_corner];
+        final calculatedOffset = _calculateOffset();
 
         return Stack(
           children: <Widget>[
@@ -225,6 +242,23 @@ class MovableOverlayState extends State<MovableOverlay>
         );
       },
     );
+  }
+
+  Offset? _calculateOffset() {
+    return widget.allowPositionAlongEdges &&
+            _edge != null &&
+            _edgePosition != null
+        ? _edge!.offsetForPosition(
+            position: _edgePosition!,
+            widgetSize: _widgetSize,
+            windowSize: _windowSize,
+            padding: _padding +
+                EdgeInsets.fromLTRB(
+                    widget.pipParams.leftSpace,
+                    widget.pipParams.topSpace,
+                    widget.pipParams.rightSpace,
+                    widget.pipParams.bottomSpace))
+        : _offsets[_corner];
   }
 
   void _onScaleStart(ScaleStartDetails details) {
@@ -295,8 +329,6 @@ class MovableOverlayState extends State<MovableOverlay>
           return Offset(left, bottom);
         case PIPViewCorner.bottomRight:
           return Offset(right, bottom);
-        default:
-          throw UnimplementedError();
       }
     }
 
@@ -342,4 +374,40 @@ PIPViewCorner _calculateNearestCorner({
   distances.sort((cd0, cd1) => cd0.distance.compareTo(cd1.distance));
 
   return distances.first.corner;
+}
+
+class _EdgeDistance {
+  final PIPViewEdge edge;
+  final double distance;
+  final double position;
+
+  _EdgeDistance({
+    required this.edge,
+    required this.distance,
+    required this.position,
+  });
+
+  @override
+  String toString() => "[_EdgeDistance $edge $distance/$position]";
+}
+
+(PIPViewEdge, double) _calculateNearestEdge(
+    {required Offset offset,
+    required Size widgetSize,
+    required Size windowSize}) {
+  _EdgeDistance calculateDistance(PIPViewEdge edge) {
+    final (distance, position) = edge.distanceAndPosition(
+        widgetSize: widgetSize, windowSize: windowSize, offset: offset);
+    return _EdgeDistance(
+      edge: edge,
+      distance: distance,
+      position: position,
+    );
+  }
+
+  final distances = PIPViewEdge.values.map(calculateDistance).toList();
+
+  distances.sort((cd0, cd1) => cd0.distance.compareTo(cd1.distance));
+
+  return (distances.first.edge, distances.first.position);
 }
