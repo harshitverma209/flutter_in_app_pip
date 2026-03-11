@@ -1,3 +1,6 @@
+## 1.7.5
+* Added a basic example app.
+
 ## 1.7.4
 * `PiPMaterialApp.router` is now stable.
 * Added repository link and homepage.
